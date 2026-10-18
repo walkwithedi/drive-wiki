@@ -8,6 +8,8 @@ permissions:
   pull-requests: write
 jobs:
   review:
+    # needs GitHub Advanced Security on a private repository; runs once the repository is public
+    if: github.event.repository.private != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

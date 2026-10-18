@@ -18,6 +18,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   analyze:
+    # needs GitHub Code Security on a private repository; runs once the repository is public
+    if: github.event.repository.private != true
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
