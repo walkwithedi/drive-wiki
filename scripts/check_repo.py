@@ -8,7 +8,8 @@
   3. Environment-bound words (tool names, sandbox paths) appear only in the backend and
      environment references, never in SKILL.md or other references.
   4. No library file name is hard-coded in scripts: names come from kbconf.
-  5. Presets pass kbconf validation; preset placeholders are present.
+  5. Presets and the sample library pass kbconf validation; preset placeholders are present.
+  6. The inbox configuration examples are valid JSON with the same keys as the inbox script.
 Exit code 1 on any problem.
 """
 import glob
@@ -96,7 +97,7 @@ def check_hardcoded_names():
 
 def check_libraries():
     presets = glob.glob(os.path.join(ROOT, "skills", "kb-incremental", "assets", "presets", "*"))
-    for d in presets:
+    for d in presets + [os.path.join(ROOT, "examples", "sample-life-kb")]:
         rel = os.path.relpath(d, ROOT)
         for msg in kbconf.validate(json.loads(read(os.path.join(d, "_kb.json")))):
             bad(f"{rel}/_kb.json: {msg}")
@@ -119,11 +120,36 @@ def check_libraries():
                 bad(f"{os.path.relpath(d, ROOT)}/summary: missing {kbconf.DEFAULT_NAMES[k]}")
 
 
+def check_inbox_examples():
+    """Each example uses one key set of CONFIG_KEYS in apps-script/kb_inbox.gs, with every required key."""
+    gs = read(os.path.join(ROOT, "apps-script", "kb_inbox.gs"))
+    keys = re.findall(r"^  (\w+): +\{ zh: '([^']+)', +required: (true|false)", gs, re.M)
+    if not keys:
+        bad("apps-script/kb_inbox.gs: CONFIG_KEYS not found")
+        return
+    for p in sorted(glob.glob(os.path.join(ROOT, "examples", "inbox-config.*.json"))):
+        rel = os.path.relpath(p, ROOT)
+        try:
+            cfg = json.loads(read(p))
+        except json.JSONDecodeError as e:
+            bad(f"{rel}: invalid JSON: {e}")
+            continue
+        zh = any(zh_name in cfg for _, zh_name, _ in keys)
+        names = {(zh_name if zh else en): req == "true" for en, zh_name, req in keys}
+        for k in cfg:
+            if k not in names:
+                bad(f"{rel}: key {k!r} is not a {'Chinese' if zh else 'English'} inbox key")
+        for k, required in names.items():
+            if required and k not in cfg:
+                bad(f"{rel}: missing required key {k!r}")
+
+
 def main():
     check_skills()
     check_env_words()
     check_hardcoded_names()
     check_libraries()
+    check_inbox_examples()
     print("result: " + (f"{len(problems)} problems" if problems else "ok"))
     sys.exit(1 if problems else 0)
 
