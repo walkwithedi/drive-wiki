@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+dist/
+.DS_Store
+config/kb-libraries.json
+# a private-terms list belongs in ~/.config/drive-wiki/, never here
+sensitive_terms.txt
+*.zip
