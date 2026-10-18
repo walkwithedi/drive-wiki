@@ -1,0 +1,49 @@
+name: apps-script-deploy
+# Pushes apps-script/kb_inbox.gs to your inbox Apps Script projects with clasp when it changes
+# on main, or when run by hand (docs/inbox.md, "Deploying with clasp"). Needs, in Settings >
+# Secrets and variables > Actions:
+#   secret    CLASPRC_JSON          the whole of ~/.clasprc.json written by clasp login
+#   variable  KB_INBOX_SCRIPT_IDS   the inbox projects' script IDs, separated by spaces
+# Without them the run only warns and skips.
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps-script/kb_inbox.gs
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: apps-script-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+      SCRIPT_IDS: ${{ vars.KB_INBOX_SCRIPT_IDS }}
+    steps:
+      - name: Check settings
+        id: cfg
+        run: |
+          if [ -z "$CLASPRC_JSON" ] || [ -z "$SCRIPT_IDS" ]; then
+            echo "::warning::CLASPRC_JSON or KB_INBOX_SCRIPT_IDS is not set; skipping (docs/inbox.md)"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "projects: $(echo $SCRIPT_IDS | wc -w)"
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        if: steps.cfg.outputs.ready == 'true'
+        with:
+          persist-credentials: false
+      - name: Install clasp
+        if: steps.cfg.outputs.ready == 'true'
+        run: npm install -g @google/clasp@3.4.1
+      - name: Push to Apps Script
+        if: steps.cfg.outputs.ready == 'true'
+        run: |
+          umask 077
+          printf '%s' "$CLASPRC_JSON" > "$RUNNER_TEMP/clasprc.json"
+          # SCRIPT_IDS unquoted on purpose: one argument per script ID
+          CLASP_AUTH="$RUNNER_TEMP/clasprc.json" bash scripts/deploy_apps_script.sh $SCRIPT_IDS

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "library": "Sample Life",
+  "partition_max": 10,
+  "topic_start": 2,
+  "check_yaml": true,
+  "check_sensitive": true,
+  "entities_dir": "Entities",
+  "mail": true,
+  "interval_minutes": 10,
+  "archive_dir": "Archive",
+  "inbox_dir": "Inbox",
+  "error_dir": "Refused",
+  "log_file": "_inbox-log.log",
+  "old_suffix": "_old",
+  "snapshot_prefix": "snapshot_"
+}

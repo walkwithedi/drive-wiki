@@ -33,7 +33,7 @@
  *   - 配置「检查A级信息」为 true 时，正文含疑似未遮挡的证件号、16至19位连续卡号/账号、分段卡号即整包拒收；
  *     拒收原因、日志、邮件只写文件名、行号和类别，不写号码原文。误报时（如长订单号）可临时在配置中关闭
  *   - 配置文件缺失、重复或字段不合法时一律停止，不按猜测的默认值处理
- *   - 日志：执行日志 + 追加到 归档/_入库收件箱日志.log；可选邮件通知
+ *   - 日志：执行日志 + 追加到 归档/_入库收件箱日志.log；可选邮件通知；时间按项目设置的时区
  *     收件箱为空的定时检查只写执行日志，不改写日志文件（避免每次触发都产生 Drive 修订）
  */
 
@@ -60,7 +60,8 @@ const LEVELS = { DEBUG: 10, INFO: 20, WARN: 30, ERROR: 40 };
 let LOG_BUFFER = [];
 let MAIL_LINES = [];
 
-function fmtTime_(d, p) { return Utilities.formatDate(d, 'Asia/Shanghai', p); }
+// 时间（日志、归档后缀、zip 改名）按 Apps Script 项目设置的时区（项目设置 → 时区，即 appsscript.json 的 timeZone）
+function fmtTime_(d, p) { return Utilities.formatDate(d, Session.getScriptTimeZone(), p); }
 
 function log_(level, msg) {
   if (LEVELS[level] < LEVELS[FIXED.LOG_LEVEL]) return;
@@ -577,6 +578,7 @@ function setup() {
   const main = DriveApp.getFolderById(id);   // 打不开时这里直接报错
   PropertiesService.getScriptProperties().setProperty(PROP_MAIN_ID, id);
   console.log(`主文件夹：${main.getName()}（id=${id}），已保存到脚本属性`);
+  console.log(`时区：${Session.getScriptTimeZone()}（项目设置中修改；日志与归档时间戳按此时区）`);
   const cfg = loadConfig_(main);
   console.log(`配置：${describeConfig_(cfg)}`);
   LOG_BUFFER = [];
@@ -633,6 +635,7 @@ function showStatus() {
   const props = PropertiesService.getScriptProperties();
   console.log(`主文件夹ID：代码中=${MAIN_FOLDER_ID || '（空）'}，脚本属性中=${props.getProperty(PROP_MAIN_ID) || '（空）'}`);
   console.log(`正式执行：${props.getProperty(PROP_RUN_ENABLED) === 'true' ? '已开启' : '未开启'}`);
+  console.log(`时区：${Session.getScriptTimeZone()}`);
   const n = ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'autoRun').length;
   console.log(`定时触发器：${n}个`);
   try { console.log(`配置：${describeConfig_(loadConfig_(DriveApp.getFolderById(mainFolderId_())))}`); }
