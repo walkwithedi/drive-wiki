@@ -11,6 +11,8 @@ on:
 permissions: read-all
 jobs:
   analysis:
+    # publishes results only for a public repository; runs once the repository is public
+    if: github.event.repository.private != true
     runs-on: ubuntu-latest
     permissions:
       security-events: write
