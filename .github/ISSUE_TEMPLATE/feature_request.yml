@@ -21,7 +21,7 @@ body:
       options:
         - kb-note
         - kb-query
-        - kb-incremental
+        - kb-ingest
         - Apps Script inbox
         - Presets
         - Documentation

@@ -1,11 +1,11 @@
 ---
 name: kb-query
-description: Answers questions from the user's own knowledge base of Markdown files in a Google Drive folder by searching it first, never from memory; each fact names its source file, and when nothing is found it says where it looked. Use when a question may be recorded there - what was agreed or decided, current values and limits, owners, dates, status, open items, terms, how something changed; personal records such as IDs, health, insurance, money, contracts, due dates; or whether some material is already filed. Examples: "When is the launch date?", "Who owns Project Atlas?". When the user has a knowledge base set up (a kb-libraries.json registry, KB_LIBRARIES, or libraries named in project instructions), check it before searching code or answering from general knowledge, even if the user does not say "check my knowledge base". Not for unrelated general questions. Read-only - intake, archive, health checks and setup belong to kb-incremental; saving notes belongs to kb-note.
+description: Answers questions from the user's own knowledge base of Markdown files in a Google Drive folder by searching it first, never from memory; each fact names its source file, and when nothing is found it says where it looked. Use when a question may be recorded there - what was agreed or decided, current values and limits, owners, dates, status, open items, terms, how something changed; personal records such as IDs, health, insurance, money, contracts, due dates; or whether some material is already filed. Examples: "When is the launch date?", "Who owns Project Atlas?". When the user has a knowledge base set up (a kb-libraries.json registry, KB_LIBRARIES, or libraries named in project instructions), check it before searching code or answering from general knowledge, even if the user does not say "check my knowledge base". Not for unrelated general questions. Read-only - intake, archive, health checks and setup belong to kb-ingest; saving notes belongs to kb-note.
 ---
 
 # Knowledge base questions
 
-Version: 1.23.0
+Version: 2.0.0
 
 Read-only: search, read and answer. Never create, change, move or delete anything in a library. Partitions, topics and terms are read from the library, never from this file.
 
@@ -17,11 +17,11 @@ Read references/config.md and references/environment.md once before starting.
 2. Load the registry and match the question against each scope. Search the libraries that fit.
 3. Unclear, or more than one could hold the answer: search every library that might, without asking.
 4. If unsure whether a question falls in a library, read that library's spec Table A to check; still unsure, treat as rule 3.
-5. Intake, archive, health check or setup requests belong to kb-incremental.
+5. Intake, archive, health check or setup requests belong to kb-ingest.
 
 For each library searched, read its backend file and _kb.json. Start the answer with: Library: <label(s)>.
 
-After the answer, check each library searched for files waiting for consolidation (references/config.md, section 5); remind once per conversation. This skill only reminds and hands "consolidate" to kb-incremental.
+After the answer, check each library searched for files waiting for consolidation (references/config.md, section 5); remind once per conversation. This skill only reminds and hands "consolidate" to kb-ingest.
 
 ## Step 2: which file first
 
@@ -38,13 +38,16 @@ After the answer, check each library searched for files waiting for consolidatio
 ## Step 3: search
 
 Use the operations in the backend file, always inside the chosen library root.
+
+Wordings first: for each keyword, list the ways the library may write it: the user's words, the standard term in the status card and glossary, the old forms the spec's Table B maps to it, and for a person, organisation, system or project its Table E name and aliases (from files already read for this question; do not fetch extra files just for this). Search a keyword with up to three of its wordings at once, as the backend file says for several wordings.
+
 - Summary files: find_by_name with the search key (references/config.md).
 - Source material by name: find_by_name. File names look like <partition>_<topic>_<type>_<short title>.md, so a partition can be searched with its prefix ("05_"). Family material in a life library carries the family member in the short title.
 - Source material by content: find_by_text.
 
 Rules:
 1. Never use a file ID or path from memory; use what the search returns.
-2. Search with partial strings, not full titles.
+2. Search with partial strings, not full titles. When a keyword finds nothing, its reworded retry (rule 6) uses wordings not tried yet.
 3. Stay in the root folder level; never widen the search beyond the library. The entities folder is searched only for questions about one person, organisation, system or project as a whole.
 4. Never use the ignored files listed in references/config.md.
 5. Several copies of one summary file: use the most recently modified and add "several copies of this file exist; the newest was used".
@@ -66,8 +69,9 @@ History: only when the user asks for old versions, search the archive folder, an
 5. No inference. What the library does not record: "not recorded in the knowledge base". If general knowledge is really needed, put it in a separate paragraph headed "not from the knowledge base".
 6. Items still open in the open-items list: state that and the deadline recorded.
 7. A basis file that is still in the consolidation queue (names.consolidation_queue; read the queue once when a source file is the basis): add "this file is not consolidated yet; the status card may not reflect it yet" (「该文件尚未整合，状态卡可能还没有反映它的内容」). When it disagrees with the status card, say which is newer by the filed time in the queue, and still do not decide who is right.
-7. Quick notes: mark "quick note, not yet filed" with the note's file name, and that it has not been checked; keep any "unconfirmed" mark.
-8. Nothing found: say which libraries, files and keywords were searched, conclude "nothing found in the knowledge base", and suggest rewording or checking whether the material was filed.
-9. With sensitivity enabled: never show class-A data in full (ID, card and account numbers, passwords, codes); mask with asterisks, at most the last keep_last characters. No health, money or investment advice and no interpretation of results, diagnoses, returns or coverage; report only what is recorded.
-10. Answer only what was asked; mention the search process only when nothing was found or sources conflict.
-11. Replies follow the library language and preferences.output.
+8. Quick notes: mark "quick note, not yet filed" with the note's file name, and that it has not been checked; keep any "unconfirmed" mark.
+9. Answer snapshots (files of the type "answer archive", or quick notes whose source is "knowledge base answer"): use one only when the status card and source material do not answer; say it is a snapshot of its date that is not updated when its sources change, and name the basis files it cites. Where it disagrees with the status card, the status card is current.
+10. Nothing found: say which libraries, files, keywords and wordings were searched, conclude "nothing found in the knowledge base", and suggest rewording or checking whether the material was filed.
+11. With sensitivity enabled: never show class-A data in full (ID, card and account numbers, passwords, codes); mask with asterisks, at most the last keep_last characters. No health, money or investment advice and no interpretation of results, diagnoses, returns or coverage; report only what is recorded.
+12. Answer only what was asked; mention the search process only when nothing was found or sources conflict.
+13. Replies follow the library language and preferences.output.

@@ -13,7 +13,7 @@ To try it in claude.ai:
 3. Try, in order:
    1. "What is my cholesterol trend?" (kb-query reads the status card and the 2025 checkup)
    2. "Note this: the boiler service is due in March." (kb-note writes to Quick-Notes/)
-   3. "File this" with sample-materials/checkup_2026.txt (kb-incremental: new material in partition 02, a value change for consolidation)
+   3. "File this" with sample-materials/checkup_2026.txt (kb-ingest: new material in partition 02, a value change for consolidation)
    4. "Consolidate" (the status card update, proposed as a numbered list)
    5. "File my quick notes"
    6. "Health check"

@@ -22,7 +22,7 @@ docx, xlsx and pptx are zip packages of OOXML parts; this module reads the XML d
 Heading levels come from the styles.xml mapping plus heuristics, so documents with
 irregular styles lose some structure but never their text.
 
-Used by tools/doc2kb/doc2kb.sh (desktop and cron use) and by the kb-incremental skill
+Used by tools/doc2kb/doc2kb.sh (desktop and cron use) and by the kb-ingest skill
 (scripts/convert.py), which imports process_one().
 """
 

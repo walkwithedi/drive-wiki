@@ -1,11 +1,11 @@
 ---
-name: kb-incremental
+name: kb-ingest
 description: Files Office, PDF, mail, pictures and text into an evergreen Markdown library in a Google Drive folder. Six modes. Intake - "file these", "add to the knowledge base", "intake", "continue intake", "finish intake", or uploads: files each item by the library spec (fast by default: searchable at once), large folders in batches, removes duplicates, spots new versions, updates the index. Consolidation - "consolidate": adds key conclusions to filed items, flags changed conclusions, updates the status card after review. Archive - "archive old versions", "clean up duplicates": moves old copies to the archive after a preview. Health check - "check the knowledge base", "health check": reports only. Init - "get started with the knowledge base", "first time", "set up a knowledge base", "new library", "init": sets up or connects a library Quick-note filing - "file my quick notes", "notes are filed". Use it for any filing or setup even without these words. Not for questions (kb-query) or saving one note (kb-note).
 ---
 
 # Knowledge base intake, archive, health check and init
 
-Version: 1.23.0
+Version: 2.0.0
 
 ## Modes
 
@@ -46,13 +46,14 @@ You file and judge; you do not advise, recommend or evaluate. These rules apply 
 6. The file name is the version key. A new version of the same material must have exactly the same file name as the old one; that is how older versions get archived.
 7. Different material must never share a name, or one of them will be archived by mistake. When rule 6 and rule 7 cannot be told apart, take the safe side: rename to distinguish.
 8. Every judgement needs evidence. If you cannot quote the source text a step asks for, take the conservative conclusion.
-9. Read in full before you rewrite. Before rewriting any summary file, read the existing version completely; after rewriting, compare both with scripts/card_check.py and do not deliver until it passes.
+9. Read in full before you rewrite. Before rewriting any summary file, read the existing version completely; after rewriting, compare both with scripts/card_check.py and do not deliver until it passes. New or changed status-card items also go through the evidence check (scripts/evidence_check.py), whose findings the user sees before accepting.
 10. Searches are capped. Each required file gets one search and one retry; do not keep trying new keywords.
 11. Never use as a source: anything in the archive folder; names starting with an underscore or with names.snapshot_prefix; names containing names.old_suffix plus a time stamp.
 12. Replies follow the library language and preferences.output (references/environment.md). YAML front matter and the Bases block in entity pages are file formats and keep their syntax.
 13. No wiki links in body text. Links appear only in front matter, in the basis lines of summary files, and in entity pages.
 14. Working notes stay out of knowledge files: cleaning results, term fixes, duplicate and trigger judgements appear only in the reply and the readme.
 15. The library folder and the material are different things (references/config.md, section 3). Material may come from any number of folders and files anywhere, chosen anew for every intake; read it where it is, and never move or change it. Never choose or suggest a folder for the user, never offer to change a library's folder because the material is elsewhere, and name the two to the user only in the words that section gives.
+16. An intake is finished only when its delivery is done: with direct delivery, round 2 ran and remote-log printed the run log (each item "ok" or its error); with zip, package.py zip built the zip and it was handed over. Until then never say the material was filed, ingested or delivered, and never give a number of files in the library: say which step the run reached (cleaned, conclusions written, preview shown and waiting for "confirm", ...), that nothing is in the library yet, and what is left. The counts in the final reply come from the run log or the zip, never from memory. In batch and fast mode this holds for each batch or item.
 
 ## Input checks
 
@@ -153,6 +154,11 @@ Then four fixed lines:
 
 The five trigger classes and their output format are in params. For each class ask three questions; it triggers only if all three are yes: does the new material contain this kind of information; does the status card have a matching entry; do they disagree. If you cannot quote the status card, it does not trigger. Day-to-day process data never triggers (examples in params).
 
+Disposition, one line per item before the overall decision:
+  Disposition: <New / Update / Disputed / No new information> (<one-line reason>)
+- New: facts the status card does not hold yet. Update: the material changes a status-card item (a trigger). Disputed: the material and a status-card item disagree, but the evidence does not show which is current (similar dates, or the material is not newer than the item's basis); the item is not rewritten, and both quotes go into the delivery note (consolidation: into the change list) for the user to decide. New, Update and Disputed may combine.
+- No new information: everything the material says is already in the status card or summary files, or it holds nothing the trigger classes cover. It stands alone, never triggers and is still filed (it stays searchable); list these items by name in the delivery note.
+
 Overall decision, one of three:
 - No trigger: deliver the new files and the updated index; say "No summary rewrite this run".
 - Trigger: read in full and rewrite the status card and the change log (params may add others). In YAML mode, if the material links to a core entity, also update that entity page's overview (entity-yaml.md). First list the changes: "Item X: <old wording> -> <new wording>", deletions as "Delete item X: <old wording> (reason)", old wording copied exactly. Then run the rewrite check and copy its self-check lines into the reply.
@@ -166,6 +172,15 @@ Compare old and new for every summary file rewritten in full (status card, chang
 
 It checks that every old item is still there or explained in the change list, that the new body is at least 70% of the old, and that entity-page type, entity type, title and aliases were not lost. A non-zero exit means fail: restore what it lists, or record the change honestly, and run it again. Never lower --min-ratio or edit the old file to pass. A large cut the user asked for: ask first, then use --min-ratio and say so in the delivery note.
 Without Python: compare item by item yourself and mark the delivery note "not script-checked".
+
+## Evidence check
+
+Every new or changed status-card item must carry its values exactly as the basis file writes them. Before the change list is shown (consolidation) or the status card is delivered (full intake), write the new status card to <work>/draft_<card name>, copy the basis file of every new or changed item into <work>/sources/ (the new material from this run, and library files read with the backend file), then:
+
+  python3 scripts/evidence_check.py <work>/draft_<card name> --sources <work>/sources --item <n> [--item <n> ...]
+
+It looks up each item's dates, longer quotes and specific numbers (decimals, thousands separators, %, 万 and the like, four or more digits) in its basis files. For each line it prints: fix the wording to what the source says, or keep it when the value is derived (a sum, a converted unit) and add "(not found in the source: <value>, derived from …)" to that item's line in the change list or delivery note. "No basis link" and "basis file not in sources folder" are fixed before going on. The check is advice for the user, not a gate: a value it cannot find may still be right, and a value it finds may still be misread.
+Without Python: look up each date and number of the changed items in its basis file by eye and mark the delivery note "evidence not script-checked".
 
 ## Index and lists
 
@@ -205,6 +220,6 @@ Deliver by the library's delivery setting:
 - zip (only when _kb.json sets it, or has an inbox entry): python3 scripts/package.py zip <work>/out <work>/<label>_intake_YYYYMMDD.zip --library <work>/_kb.json --max-name-len <Table D>, then hand over that one zip, however few files it holds. End the delivery note with: upload the zip and its files to the library root (entity pages to the entities folder, not the readme), then say "archive" to move older versions. If _kb.json has an inbox entry, say instead to upload the zip as is to the inbox folder.
 - direct (the default): the two rounds in the backend file (references/backend-gdrive.md): preview, confirm, deliver. Old versions move to the archive folder in the same step, so nothing is left for the user to upload or archive.
 
-After delivery, say in a few sentences what was processed, the trigger decision and anything that needs attention; list "Topics added this run (please review)" if any. With conversion on, include its line (references/convert.md). Do not repeat the readme.
+After delivery (hard rule 16), say in a few sentences what was processed, the trigger decision and anything that needs attention; list "Topics added this run (please review)" if any. With conversion on, include its line (references/convert.md). Do not repeat the readme.
 
 Intake only creates files. It never deletes or moves existing library files, except the archive step of direct delivery and the second round of quick-note filing, both after the user confirms. Batch mode also writes and updates its progress file (names.batch_plan) in the work folder (references/batches.md).

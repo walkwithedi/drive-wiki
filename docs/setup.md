@@ -10,11 +10,11 @@ How to start a library in claude.ai or the Claude apps, what each step writes, a
 
 ## 1. Upload the skills
 
-Download `kb-note-<version>.zip`, `kb-query-<version>.zip` and `kb-incremental-<version>.zip` from the [Releases](../../../releases) page; the `-zh` zips are the same skills with Chinese trigger phrases. Upload each in Settings > Capabilities > Skills and make sure all three are switched on. To update later, upload the new zips in the same place, replacing the old ones; libraries need no change.
+Download `kb-note-<version>.zip`, `kb-query-<version>.zip` and `kb-ingest-<version>.zip` from the [Releases](../../../releases) page; the `-zh` zips are the same skills with Chinese trigger phrases. Upload each in Settings > Capabilities > Skills and make sure all three are switched on. To update later, upload the new zips in the same place, replacing the old ones; libraries need no change.
 
 ## 2. Set up the first library
 
-In the Project, with Google Drive connected, say "get started with the knowledge base" ("开始使用知识库"). kb-incremental:
+In the Project, with Google Drive connected, say "get started with the knowledge base" ("开始使用知识库"). kb-ingest:
 
 1. Asks three questions, one at a time: the Drive folder for the library (a link or folder ID; it must exist and be empty), the preset (life or work) and one sentence on what belongs in the library (the scope, used to route each request to the right library).
 2. Works out the rest: label and id, language, timezone, sensitivity (on for life), conversion of uploads to Markdown (on).
@@ -35,7 +35,7 @@ Paste the line into the Project instructions, save, and start a new conversation
 
 1. Upload a document and say "file this". Intake places it in a partition, names it, checks for duplicates and versions, writes it after a preview and reports one line. It is searchable at once.
 2. Ask a question the document answers. kb-query reads the status card, then the file, and names the file in its answer.
-3. Say "consolidate". kb-incremental adds the file's key conclusions and proposes changes to the status card as a numbered list for you to accept.
+3. Say "consolidate". kb-ingest adds the file's key conclusions and proposes changes to the status card as a numbered list for you to accept.
 
 Other requests: "note this: ..." (kb-note), "file my quick notes", "archive old versions", "health check".
 
@@ -64,12 +64,12 @@ An existing library (a folder that already holds a spec, for example the [sample
 
 - `scope` decides which library a request goes to; keep each one a clear sentence.
 - `preferences.output` is `markdown` or `plain` (no Markdown markup in replies).
-- Every entry is a Google Drive folder (`"type": "gdrive"`); libraries in local folders are served by [evergreen-wiki](https://github.com/walkwithedi/evergreen-wiki).
+- Every entry is a Google Drive folder (`"type": "gdrive"`); an entry of another type is refused.
 
 A registry can also be built into the skill zips for your own use: `python3 scripts/build_skill.py --config my-registry.json` writes it into each zip. Such a zip holds your folder IDs: never publish it.
 
 ## Settings of a library
 
-`_kb.json` and `_kb-params.md` sit in the library root; the skills read them every time. The keys of `_kb.json` (language, timezone, names, sensitivity, partitions, delivery, conversion, intake) are described in [skills/kb-incremental/references/config.md](../skills/kb-incremental/references/config.md). Say "init" and name the library to have init mode check them against the spec and complete them.
+`_kb.json` and `_kb-params.md` sit in the library root; the skills read them every time. The keys of `_kb.json` (language, timezone, names, sensitivity, partitions, delivery, conversion, intake) are described in [skills/kb-ingest/references/config.md](../skills/kb-ingest/references/config.md). Say "init" and name the library to have init mode check them against the spec and complete them.
 
 To deliver intake results as a zip through the Apps Script inbox instead of writing them directly, see [inbox.md](inbox.md).

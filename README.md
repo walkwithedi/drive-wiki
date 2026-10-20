@@ -4,11 +4,20 @@ A personal knowledge base that Claude keeps in a Google Drive folder and that st
 
 | Skill | You say | It does |
 | --- | --- | --- |
-| kb-note | "note this" | saves a piece of the conversation as a quick note, to be filed later |
-| kb-incremental | "file these", "consolidate", "file my quick notes", "archive old versions", "health check", "set up a knowledge base" | sorts material into partitions, removes duplicates, keeps one current version per document, updates the status card when facts change, checks the library's health |
+| kb-note | "note this", "save this answer" | saves a piece of the conversation, or an answer worth keeping, as a quick note to be filed later |
+| kb-ingest | "file these", "consolidate", "file my quick notes", "archive old versions", "health check", "set up a knowledge base" | sorts material into partitions, removes duplicates, keeps one current version per document, updates the status card when facts change, checks the library's health, including whether the status card's numbers and dates appear in their sources |
 | kb-query | any question the library may answer | searches the library first and answers with the file it came from, never from memory |
 
 [中文说明](README.zh-CN.md)
+
+## Who it is for
+
+One person keeping their own knowledge, life and work, and asking it from the Claude app on a phone wherever they are.
+
+- **No computer needed day to day.** Notes, questions and intake all run in the Claude app on a phone. For a large intake, convert the files to Markdown first with any tool and turn on the [inbox](docs/inbox.md); then intake runs smoothly on a phone too. One Markdown file per document keeps each document's versions and duplicate checks separate; one file for the whole batch also works and is filed as one item.
+- **Current and sourced.** Newer versions replace older ones and the status card keeps only what is current: with full intake (`intake.mode: full`) each file updates it as it is filed, with fast intake (the preset) at consolidation. Every fact names its source file, and status-card changes are checked against the source before they are written.
+- **Plain Drive folders.** There is no git, terminal or server to set up; uploaded Word, PDF and mail files are turned into text first.
+- **Not for** teams writing to one library at the same time (there is no protection against simultaneous writes), or anyone who wants line-by-line history and fully offline libraries; a local Markdown folder kept in git suits that better.
 
 ## Why
 
@@ -20,11 +29,11 @@ An assistant that answers from a pile of documents returns whichever matches bes
 - **The library's own spec** decides partitions and topics. It grows when material does not fit, and tells you each time.
 - **File fast, consolidate after.** Each file is searchable as soon as it is filed; reconciling it with the summary files happens in a later round that you review.
 
-The reasoning is in [docs/methodology.md](docs/methodology.md). drive-wiki follows the same method as [evergreen-wiki](https://github.com/walkwithedi/evergreen-wiki), which keeps libraries in local folders for offline workstations; drive-wiki serves libraries in Google Drive only. kb-incremental here corresponds to kb-ingest there.
+The reasoning is in [docs/methodology.md](docs/methodology.md).
 
 ## How it fits together
 
-- **The skills** (kb-note, kb-query, kb-incremental): instructions and scripts claude.ai loads. They do the work.
+- **The skills** (kb-note, kb-query, kb-ingest): instructions and scripts claude.ai loads. They do the work.
 - **A library**: a Drive folder of Markdown files with its settings (`_kb.json`), process parameters (`_kb-params.md`), spec, status card and file index. You can keep several, for example one for life and one for work.
 - **The registry** (`kb-libraries.json`, kept in Drive): the list of your libraries with each one's id, label, scope and folder ID. The skills read it to choose the library for a request.
 - **One line in the Project instructions.** It tells Claude that the libraries exist and where the registry is, so it consults them before answering from memory.
@@ -33,7 +42,7 @@ The reasoning is in [docs/methodology.md](docs/methodology.md). drive-wiki follo
 ```text
 you --ask--> Claude (in a Project) --reads--> instructions line (registry: Drive folder ...)
                  |
-                 +-- skill (kb-query, kb-note, kb-incremental)
+                 +-- skill (kb-query, kb-note, kb-ingest)
                        +-- registry kb-libraries.json: which library, which folder
                        +-- library folder: Markdown files, status card, file index
                  |
@@ -42,11 +51,20 @@ you --ask--> Claude (in a Project) --reads--> instructions line (registry: Drive
 
 ## Quick start
 
-1. Download `kb-note`, `kb-query` and `kb-incremental` from [Releases](../../releases) (the `-zh` zips have Chinese trigger phrases) and upload each in claude.ai Settings > Capabilities > Skills.
+1. Download `kb-note`, `kb-query` and `kb-ingest` from [Releases](../../releases) (the `-zh` zips have Chinese trigger phrases) and upload each in claude.ai Settings > Capabilities > Skills.
 2. Connect Google Drive, create an empty folder for the library, and create a Project for your knowledge base.
 3. In the Project, say "get started with the knowledge base". Claude asks three questions (where, which preset, what belongs in it), shows a preview, writes the library into the folder and gives you one line to paste into the Project instructions. Paste it, save, and start a new conversation in the Project.
 
 Step by step, with what each step writes: [docs/setup.md](docs/setup.md). The fictional [sample library](examples/) shows what a library looks like after a few intakes.
+
+## Upgrading from 1.x
+
+In 2.0 the intake skill is named kb-ingest; it was kb-incremental. claude.ai tells skills apart by name, so uploading kb-ingest adds a second skill instead of replacing the old one, and the two would answer the same phrases.
+
+1. In claude.ai Settings > Capabilities > Skills, delete kb-incremental.
+2. Upload the three 2.0 zips: kb-note, kb-query and kb-ingest.
+
+Libraries, the registry, the inbox and the line in the Project instructions stay as they are.
 
 ## How a library looks
 
@@ -75,7 +93,7 @@ Every release carries:
 
 | File | Use it for |
 | --- | --- |
-| `kb-note-<version>.zip`, `kb-query-<version>.zip`, `kb-incremental-<version>.zip` | uploading the skills to claude.ai or the Claude apps |
+| `kb-note-<version>.zip`, `kb-query-<version>.zip`, `kb-ingest-<version>.zip` | uploading the skills to claude.ai or the Claude apps |
 | the same names ending in `-zh.zip` | the same skills with Chinese trigger phrases |
 | `drive-wiki-v<version>.zip` | the whole repository: skills, the inbox script, the docs and the sample library |
 

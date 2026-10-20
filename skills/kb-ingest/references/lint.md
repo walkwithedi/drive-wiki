@@ -20,6 +20,7 @@ Files created or modified in the last 30 days by default. "All" checks everythin
 10. Possible duplicate entities (YAML mode): compare all Table E names and aliases in pairs for names that may mean one thing: translations, abbreviations and full names, short names, differences in case, hyphens or spaces, alternative spellings. Give each group a reason and a confidence (high: only the naming differs; medium: likely the same, depends on context; low: unsure). Different types are usually not grouped. Skip pairs the spec records as confirmed different. Suggest keeping one name and moving the others to aliases, for the user to decide; if the user says they differ, suggest recording that in the spec so it is not reported again.
 11. Quick-note backlog: if the notes folder exists, count its .md files (not the filed subfolder) and the oldest creation date. Over 20 notes or older than 14 days: suggest filing them.
 12. Consolidation backlog: rows in the consolidation queue (names.consolidation_queue) and the oldest filed time; queue rows whose file is missing from the root; topic files in scope that carry the pending mark <!-- kb:conclusions-pending --> but have no queue row. Any rows older than 14 days, or more than 30 rows: suggest consolidation.
+13. Status-card values (evidence check): take the status-card items whose basis file is in scope ("all": every item), read their basis files into <work>/sources/, at most 20 files (more: take the items with the newest basis files and say "sampled"), save the status card as <work>/<card name>, and run python3 scripts/evidence_check.py <work>/<card name> --sources <work>/sources with --item for each item checked. Report each value not found, each item without a basis link and each basis file missing from the library. Report only: a value may be derived, so the user decides with intake or consolidation. Without Python: skip this check and say "not run without Python".
 
 ## Output (fixed structure)
 
@@ -36,6 +37,7 @@ Date, library, scope
 10. Possible duplicate entities: N groups (each: name A, name B; reason; confidence)
 11. Quick-note backlog: no notes folder / N notes, oldest YYYY-MM-DD
 12. Consolidation backlog: no queue / N files, oldest YYYY-MM-DD HH:MM; N rows without file, N marked files without row
+13. Status-card values: N items checked (sampled / all in scope), N values not found, N without basis link, N basis files missing (each: item number, value, basis file)
 Suggested actions: three to five, by priority, each naming the mode that handles it.
 
 When a check finds many items, count first and sample; over 20 in one check, list the first 20 and give the total.

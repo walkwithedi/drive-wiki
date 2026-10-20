@@ -22,11 +22,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 REFS = ["config.md", "environment.md", "backend-gdrive.md"]
 # (file under shared/, folders that receive a copy, relative to the repository root)
-PLAN = [(f"references/{r}", [f"skills/{s}/references" for s in ("kb-note", "kb-query", "kb-incremental")])
+PLAN = [(f"references/{r}", [f"skills/{s}/references" for s in ("kb-note", "kb-query", "kb-ingest")])
         for r in REFS]
-PLAN.append(("scripts/kbconf.py", ["skills/kb-incremental/scripts", "skills/kb-query/scripts"]))
-# the converter: used by kb-incremental (scripts/convert.py)
-PLAN.append(("scripts/doc2kb_core.py", ["skills/kb-incremental/scripts"]))
+PLAN.append(("scripts/kbconf.py", ["skills/kb-ingest/scripts", "skills/kb-query/scripts"]))
+# the converter: used by kb-ingest (scripts/convert.py)
+PLAN.append(("scripts/doc2kb_core.py", ["skills/kb-ingest/scripts"]))
 
 
 def copies():

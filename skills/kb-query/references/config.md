@@ -16,8 +16,8 @@ Look for the registry in this order and use the first one found:
 If none exists, nothing is set up yet. Never guess a folder ID or path. Offer setup once, in one line, then go on:
 - kb-query: a question unrelated to any knowledge base is answered normally, without the offer. A question meant for the knowledge base: say it is not set up yet and offer: "No knowledge base is set up yet. Set one up now? Three questions, a preview, nothing written before you confirm."
 - kb-note: show the finished note in the reply so nothing is lost, then make the same offer; once the library exists, offer to save the note there.
-- kb-incremental (intake or setup asked for): the user already wants a library, so go straight to init mode (references/init.md in kb-incremental).
-- If the user agrees, follow the getting-started part of kb-incremental init mode (references/init.md in kb-incremental). If not, do not offer again in this conversation.
+- kb-ingest (intake or setup asked for): the user already wants a library, so go straight to init mode (references/init.md in kb-ingest).
+- If the user agrees, follow the getting-started part of kb-ingest init mode (references/init.md in kb-ingest). If not, do not offer again in this conversation.
 
 ```json
 {
@@ -32,7 +32,7 @@ If none exists, nothing is set up yet. Never guess a folder ID or path. Offer se
 }
 ```
 
-A registry in Google Drive is the same JSON, kept by kb-incremental (init mode adds entries to it), so the project instructions never change when a library is added. It sits in the root of the first Drive library under the name kb-libraries.json; the knowledge-file searches skip it because it is not a Markdown file. Drive cannot rewrite a file in place, so an update moves the old copy to that library's archive folder and writes a new one; the folder ID in the instructions stays valid.
+A registry in Google Drive is the same JSON, kept by kb-ingest (init mode adds entries to it), so the project instructions never change when a library is added. It sits in the root of the first Drive library under the name kb-libraries.json; the knowledge-file searches skip it because it is not a Markdown file. Drive cannot rewrite a file in place, so an update moves the old copy to that library's archive folder and writes a new one; the folder ID in the instructions stays valid.
 
 - id: short lowercase name used in replies and file names.
 - scope: one sentence saying what belongs in the library. It is how you decide which library a request or question belongs to.
@@ -77,8 +77,8 @@ The spec is the source of every rule about partitions, topics, terms and thresho
 - sensitivity.enabled: when true, class-A data (ID numbers, card and account numbers, passwords, one-time codes) is masked to at most the last keep_last characters before anything is written or shown.
 - partitions: highest partition number, first topic partition (00 and 01 hold summary files), and the fallback partition for new topics.
 - delivery: direct or zip. Empty means direct: the assistant writes the files into the library after you confirm a preview, and archives the old versions at the same time. A Drive library with an inbox entry (its own unpack script) defaults to zip.
-- convert: kb-incremental turns uploaded Office, PDF and mail files into Markdown with a script before reading them (fewer tokens, faster). enabled: true or false (false when the key is missing; new libraries from a preset start with true). image_limit: pictures in one batch that are read without asking (default 10); over it the user decides once for the batch. min_pdf_chars_per_page (default 200) and min_chars_per_image (default 100): below these a file is read as the original instead (a scan, or a document that is mostly pictures). outline_chars (default 6000; 0 turns it off): converted text longer than this also gets an outline (opening text, headings with line numbers), which is read first; the full text only where it is needed (references/convert.md in kb-incremental).
-- intake: how kb-incremental files material. mode: fast (the default, also when the key is missing) files each item at once, searchable as soon as it is written, and leaves key conclusions and the status-card check to consolidation (references/fast.md and references/consolidate.md in kb-incremental); full runs every step for every item before delivery, as before. A request that says "full intake" ("完整入库") uses full for that request. consolidate_files (default 10): files handled in one consolidation round. Many files are filed in batches (references/batches.md in kb-incremental): a batch closes at batch_files files (default 10) or batch_mb megabytes (default 20); material that makes more than one batch is planned first and filed batch by batch. Lower them when one batch takes too long.
+- convert: kb-ingest turns uploaded Office, PDF and mail files into Markdown with a script before reading them (fewer tokens, faster). enabled: true or false (false when the key is missing; new libraries from a preset start with true). image_limit: pictures in one batch that are read without asking (default 10); over it the user decides once for the batch. min_pdf_chars_per_page (default 200) and min_chars_per_image (default 100): below these a file is read as the original instead (a scan, or a document that is mostly pictures). outline_chars (default 6000; 0 turns it off): converted text longer than this also gets an outline (opening text, headings with line numbers), which is read first; the full text only where it is needed (references/convert.md in kb-ingest).
+- intake: how kb-ingest files material. mode: fast (the default, also when the key is missing) files each item at once, searchable as soon as it is written, and leaves key conclusions and the status-card check to consolidation (references/fast.md and references/consolidate.md in kb-ingest); full runs every step for every item before delivery, as before. A request that says "full intake" ("完整入库") uses full for that request. consolidate_files (default 10): files handled in one consolidation round. Many files are filed in batches (references/batches.md in kb-ingest): a batch closes at batch_files files (default 10) or batch_mb megabytes (default 20); material that makes more than one batch is planned first and filed batch by batch. Lower them when one batch takes too long.
 - sources: accepted and ignored; Google Drive libraries never keep copies of originals.
 - names: overrides for any default name below. Leave out the keys you do not change.
 
@@ -107,7 +107,7 @@ The spec is the source of every rule about partitions, topics, terms and thresho
 
 Each summary file also has a search key, the file name without its number prefix and extension (00_Status-Card.md → Status-Card). A library may set spec_key, status_card_key and so on in names. Search with the key, not the full name, and always use the name actually found in the library when you write the file back; if the library name differs from the configured one, say so in the delivery note.
 
-In kb-incremental, scripts/kbconf.py prints the resolved configuration: python3 scripts/kbconf.py show <library root or _kb.json>. Elsewhere, merge the defaults above with the names in _kb.json yourself.
+In kb-ingest, scripts/kbconf.py prints the resolved configuration: python3 scripts/kbconf.py show <library root or _kb.json>. Elsewhere, merge the defaults above with the names in _kb.json yourself.
 
 ### Ignored files
 
@@ -135,16 +135,16 @@ Rules:
 
 ## 4. Unfinished intake
 
-A batch intake (references/batches.md in kb-incremental) keeps its progress file (names.batch_plan) in the work folder, so it lasts only for one conversation. Within that conversation, "continue intake" picks it up as batches.md says; in a new conversation there is nothing to remind of, and the user starts the intake again (files already filed are found as duplicates by their content hash and skipped).
+A batch intake (references/batches.md in kb-ingest) keeps its progress file (names.batch_plan) in the work folder, so it lasts only for one conversation. Within that conversation, "continue intake" picks it up as batches.md says; in a new conversation there is nothing to remind of, and the user starts the intake again (files already filed are found as duplicates by their content hash and skipped).
 
 ## 5. Consolidation due: remind once per conversation
 
-Fast intake (references/fast.md in kb-incremental) writes each filed item into the consolidation queue (names.consolidation_queue, a Markdown table in the library root, kept in Google Drive libraries too). Until consolidation has run for an item, its key conclusions are not written and the status card, change log and open items may not reflect it.
+Fast intake (references/fast.md in kb-ingest) writes each filed item into the consolidation queue (names.consolidation_queue, a Markdown table in the library root, kept in Google Drive libraries too). Until consolidation has run for an item, its key conclusions are not written and the status card, change log and open items may not reflect it.
 
 1. After the library is chosen, find_exact names.consolidation_queue in the library root. Missing, or a table with no rows: nothing to say.
 2. Otherwise say in one line how many files wait and since when (the oldest filed time), and ask once, as a choice:
-   - Consolidate now (recommended): kb-incremental, consolidation mode.
+   - Consolidate now (recommended): kb-ingest, consolidation mode.
    - Later: no further reminder in this conversation.
    In Chinese: 「有 <n> 个文件已入库、还没整合（最早一个在 <时间>），状态卡可能还没反映它们。现在整合吗？」 with 现在整合 / 稍后再说.
 3. While a batch intake is running in the same conversation (section 4), wait until it is finished; finishing a batch intake offers consolidation itself.
-4. Ask at most once per conversation. kb-query and kb-note only remind; consolidation belongs to kb-incremental. kb-query also says, when a file it names as basis is in the queue: "this file is not consolidated yet; the status card may not reflect it yet" (「该文件尚未整合，状态卡可能还没有反映它的内容」).
+4. Ask at most once per conversation. kb-query and kb-note only remind; consolidation belongs to kb-ingest. kb-query also says, when a file it names as basis is in the queue: "this file is not consolidated yet; the status card may not reflect it yet" (「该文件尚未整合，状态卡可能还没有反映它的内容」).

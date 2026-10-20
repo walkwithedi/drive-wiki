@@ -8,8 +8,9 @@ This mode groups notes by partition and topic into material, files that material
 
 1. Read only the .md files directly in the notes folder, never the filed subfolder.
 2. Move notes only after the user confirms the intake landed, and only notes verified to be in the library (listed in this run's delivery note, or confirmed by text search in round 2). Never delete, rename or edit a note.
-3. Notes that fit no topic get a new topic under "Topic expansion" and are filed. Notes that are out of scope, belong to another library, or exactly repeat library content stay where they are, with the reason in the delivery note.
+3. Notes that fit no topic get a new topic under "Topic expansion" and are filed. Notes that are out of scope, belong to another library, or exactly repeat library content stay where they are, with the reason in the delivery note. Answer snapshots (rule 5) repeat library content by nature and are filed all the same.
 4. The user's words are the basis and are never rewritten while grouping. Key points are only a guide; where they disagree with the words, the words win and the mismatch is logged as an issue.
+5. Answer snapshots: notes whose Source is "knowledge base answer" (「知识库问答」, saved by kb-note). Each one is its own item, never grouped with other notes. Step 1: type "answer archive" (「问答存档」) if params allow a free type, else the closest listed type, noted in the delivery note; short title "answer <topic> <YYYY-MM-DD>" from the note time. Step 3: not close-read and no key conclusions (fast mode: no --close-read). Step 5: never trigger evidence and never a basis for the status card, since its basis is the library itself; its disposition is always No new information. The body keeps the note as it is, so the snapshot date and the basis files stay with it.
 
 ## Round 1: group and deliver
 

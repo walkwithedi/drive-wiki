@@ -1,4 +1,4 @@
-"""Tests for the converter (shared/scripts/doc2kb_core.py) and kb-incremental's convert.py.
+"""Tests for the converter (shared/scripts/doc2kb_core.py) and kb-ingest's convert.py.
 Standard library only: python3 -m unittest discover tests"""
 import json
 import os
@@ -12,7 +12,7 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TESTS = os.path.dirname(os.path.abspath(__file__))
 CORE = os.path.join(ROOT, "shared", "scripts", "doc2kb_core.py")
-SKILL_SCRIPTS = os.path.join(ROOT, "skills", "kb-incremental", "scripts")
+SKILL_SCRIPTS = os.path.join(ROOT, "skills", "kb-ingest", "scripts")
 sys.path.insert(0, TESTS)
 sys.path.insert(0, os.path.join(ROOT, "shared", "scripts"))
 import doc2kb_core as core  # noqa: E402
@@ -441,7 +441,7 @@ class ConfigTest(Tmp):
         sys.path.insert(0, os.path.join(ROOT, "scripts"))
         import sync_shared
         copies = sync_shared.copies()
-        self.assertEqual(copies["skills/kb-incremental/scripts/doc2kb_core.py"], "shared/scripts/doc2kb_core.py")
+        self.assertEqual(copies["skills/kb-ingest/scripts/doc2kb_core.py"], "shared/scripts/doc2kb_core.py")
 
 
 if __name__ == "__main__":

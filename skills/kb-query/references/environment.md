@@ -18,7 +18,7 @@ Paths such as scripts/batch_plan.py are relative to this skill's folder, not to 
 | --- | --- |
 | Cannot run Python | Do each script's job by hand, following the "Without Python" note at that step, and mark the result "not script-checked" in the delivery note. |
 | Cannot reach the library (no Drive tool, path not found) | Stop. Say which connector or path is missing. Never answer from memory. |
-| Cannot write files | kb-note: show the finished note in the reply so the user can save it. kb-incremental: show every output file in full. |
+| Cannot write files | kb-note: show the finished note in the reply so the user can save it. kb-ingest: show every output file in full. |
 | No registry | Offer setup once, as references/config.md describes; never guess a library location. |
 
 ## Time
