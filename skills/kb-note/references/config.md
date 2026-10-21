@@ -14,7 +14,7 @@ Look for the registry in this order and use the first one found:
 4. config/kb-libraries.json inside this skill folder (present only in a private build made with build_skill.py --config).
 
 If none exists, nothing is set up yet. Never guess a folder ID or path. Offer setup once, in one line, then go on:
-- kb-query: a question unrelated to any knowledge base is answered normally, without the offer. A question meant for the knowledge base: say it is not set up yet and offer: "No knowledge base is set up yet. Set one up now? Three questions, a preview, nothing written before you confirm."
+- kb-query: a question unrelated to any knowledge base is answered normally, without the offer. A question meant for the knowledge base: say it is not set up yet and offer: "No knowledge base is set up yet. Set one up now? Three questions, a preview, nothing written before you confirm." In claude.ai and the Claude apps, add one sentence: "If you set one up before, the knowledge base line is probably missing from the Project instructions, or this conversation is not in that Project."
 - kb-note: show the finished note in the reply so nothing is lost, then make the same offer; once the library exists, offer to save the note there.
 - kb-ingest (intake or setup asked for): the user already wants a library, so go straight to init mode (references/init.md in kb-ingest).
 - If the user agrees, follow the getting-started part of kb-ingest init mode (references/init.md in kb-ingest). If not, do not offer again in this conversation.

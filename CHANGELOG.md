@@ -2,6 +2,17 @@
 
 Releases follow the "Version:" line of the three SKILL.md files; merging a version change to main publishes v<version> (.github/workflows/release.yml).
 
+## 2.1.0
+
+Upload the three 2.1.0 zips over the 2.0 ones. Libraries, the registry, the inbox and the line in the Project instructions stay as they are.
+
+Changed
+- Init in claude.ai and the Claude apps gives one line for the Project instructions, the one naming the Drive registry. The line listing each library is only for assistants with an always-read instructions file they can write (CLAUDE.md, AGENTS.md, GEMINI.md).
+- The init report adds a setup check before the three things to try: in a new conversation in the Project, ask "which knowledge bases do I have?". An answer without the libraries means the instructions line is missing or not saved, or the conversation is outside the Project.
+- kb-query answers questions about the libraries themselves (which knowledge bases exist, which one something belongs to) from the registry, one line per library with its label and scope, without searching any library.
+- When no registry is found in claude.ai, kb-query adds the likely cause: the knowledge base line is missing from the Project instructions, or the conversation is not in that Project.
+- kb-ingest's description is shorter (879 characters, limit 1024) with the same trigger phrases.
+
 ## 2.0.0
 
 Upgrading from 1.x: in claude.ai Settings > Capabilities > Skills, delete kb-incremental, then upload the three 2.0 zips (kb-note, kb-query, kb-ingest). claude.ai tells skills apart by name, so kb-ingest does not replace kb-incremental; with both installed they answer the same phrases. Libraries, the registry, the inbox and the line in the Project instructions stay as they are.

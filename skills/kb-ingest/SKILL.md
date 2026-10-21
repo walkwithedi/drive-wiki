@@ -1,11 +1,11 @@
 ---
 name: kb-ingest
-description: Files Office, PDF, mail, pictures and text into an evergreen Markdown library in a Google Drive folder. Six modes. Intake - "file these", "add to the knowledge base", "intake", "continue intake", "finish intake", or uploads: files each item by the library spec (fast by default: searchable at once), large folders in batches, removes duplicates, spots new versions, updates the index. Consolidation - "consolidate": adds key conclusions to filed items, flags changed conclusions, updates the status card after review. Archive - "archive old versions", "clean up duplicates": moves old copies to the archive after a preview. Health check - "check the knowledge base", "health check": reports only. Init - "get started with the knowledge base", "first time", "set up a knowledge base", "new library", "init": sets up or connects a library Quick-note filing - "file my quick notes", "notes are filed". Use it for any filing or setup even without these words. Not for questions (kb-query) or saving one note (kb-note).
+description: Files Office, PDF, mail, pictures and text into an evergreen Markdown library in a Google Drive folder. Intake ("file these", "add to the knowledge base", "intake", "continue intake", "finish intake", or uploads): files each item by the library spec, searchable at once; removes duplicates, spots new versions, large folders in batches. Consolidation ("consolidate"): adds key conclusions, updates the status card after review. Archive ("archive old versions", "clean up duplicates"): moves old copies after a preview. Health check ("check the knowledge base", "health check"): reports only. Init ("get started with the knowledge base", "first time", "set up a knowledge base", "new library", "init"). Quick-note filing ("file my quick notes", "notes are filed"). Use it for any filing or setup even without these words. Not for questions (kb-query) or saving one note (kb-note).
 ---
 
 # Knowledge base intake, archive, health check and init
 
-Version: 2.0.0
+Version: 2.1.0
 
 ## Modes
 

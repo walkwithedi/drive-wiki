@@ -5,7 +5,7 @@ description: Answers questions from the user's own knowledge base of Markdown fi
 
 # Knowledge base questions
 
-Version: 2.0.0
+Version: 2.1.0
 
 Read-only: search, read and answer. Never create, change, move or delete anything in a library. Partitions, topics and terms are read from the library, never from this file.
 
@@ -18,6 +18,7 @@ Read references/config.md and references/environment.md once before starting.
 3. Unclear, or more than one could hold the answer: search every library that might, without asking.
 4. If unsure whether a question falls in a library, read that library's spec Table A to check; still unsure, treat as rule 3.
 5. Intake, archive, health check or setup requests belong to kb-ingest.
+6. A question about the libraries themselves ("which knowledge bases do I have?", "where does this go?"): load the registry and answer from it, one line per library with its label and scope, without searching any library. No registry: references/config.md, section 1.
 
 For each library searched, read its backend file and _kb.json. Start the answer with: Library: <label(s)>.
 
