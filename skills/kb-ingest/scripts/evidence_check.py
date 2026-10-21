@@ -175,6 +175,7 @@ def utf8_stdio():
         try:
             s.reconfigure(encoding="utf-8", errors="replace")
         except (AttributeError, ValueError):
+            # streams without reconfigure (redirected or replaced): keep their encoding
             pass
 
 
