@@ -1,5 +1,7 @@
 ## Downloads
 
+Most people need only three zips: `kb-note`, `kb-query` and `kb-ingest`, either all three plain or all three `-zh`.
+
 | File | Use it for |
 | --- | --- |
 | `kb-note-<version>.zip`, `kb-query-<version>.zip`, `kb-ingest-<version>.zip` | upload each in claude.ai Settings > Capabilities > Skills |

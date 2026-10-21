@@ -20,3 +20,22 @@ Thanks for helping.
 5. Changing a rule in a SKILL.md changes behaviour for every user. Explain the failure it prevents in the pull request, and add a test where a script is involved.
 6. No personal data, work details or credentials, ever: run python3 scripts/sensitive_scan.py. Examples use obviously fictional names (Riverside Clinic, Project Atlas), example.com addresses and the documentation IP ranges (192.0.2.0/24). Images go in without EXIF or text metadata, documents without an author. Commit with your GitHub noreply address (Settings > Emails > Keep my email addresses private). SECURITY.md lists everything the scan covers and how to keep a private list of names it should also catch.
 7. No case stories, no background. Documentation, comments, the changelog, commit messages and pull requests state rules and behaviour, not where they came from: no anecdotes, no description of the environment, organisation, people or projects something was built for, and no figures taken from real documents. Explain a rule by its reason in general terms. Where an example is truly needed, keep it minimal, fictional and de-identified (rule 6).
+
+## Repository layout
+
+| Path | Content |
+| --- | --- |
+| `skills/` | the three skills; `shared/` holds the files every skill carries a copy of |
+| `locales/zh/` | Chinese trigger phrases, swapped in when a zip is built |
+| `apps-script/kb_inbox.gs` | the inbox script; `scripts/deploy_apps_script.sh` pushes it with clasp |
+| `docs/` | setup, daily use, troubleshooting, inbox, method |
+| `examples/` | the sample library and inbox configurations |
+| `tests/`, `scripts/` | script tests, zip builder, repository checks, personal-data scan |
+
+## Development
+
+```bash
+git config core.hooksPath .githooks       # once per clone: run every check before each commit
+python3 scripts/run_checks.py             # tests, repository checks, shared copies, personal-data scan
+python3 scripts/build_skill.py            # build the zips into dist/ (--locale zh for Chinese)
+```
