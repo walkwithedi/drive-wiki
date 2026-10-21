@@ -22,6 +22,7 @@ The library is a Drive folder; backend.root in the registry is its folder ID. Th
 
 1. Always restrict searches with parentId. Never search the whole Drive. parentId covers one folder level, so the archive folder is excluded automatically.
 2. Use partial strings in title contains; escape single quotes in names with a backslash.
+   Several wordings of one keyword (up to three) go into one search: parentId = '<folder id>' and (fullText contains '<a>' or fullText contains '<b>'), the same with title contains. If the connector rejects the query, search each wording on its own; every search counts toward the caller's search cap.
 3. Never use a file ID from memory; take IDs from search results in this conversation.
 4. If a file ID from an earlier step fails, search for the file again by name.
 5. A permission error on write or move means the connected Google account cannot edit that folder: stop and say so.
@@ -45,7 +46,7 @@ Drive allows several files with one name, so a new version is written only after
 
 Without Python: build the same preview by hand (archive names <stem><old_suffix><YYYYMMDDHHMMSS>.md, one second apart from now in the library timezone), carry out round 2 the same way, and write the run log with the same lines.
 
-Fast intake (references/fast.md in kb-incremental) delivers each item as soon as it is filed: run round 1 with --run <work>/run.json and carry out round 2 without waiting, since the run was confirmed once at its start. The file index and the consolidation queue are archived once per run and replaced after that; remote-log says when to append to the run log and readme written earlier in the run instead of writing new ones.
+Fast intake (references/fast.md in kb-ingest) delivers each item as soon as it is filed: run round 1 with --run <work>/run.json and carry out round 2 without waiting, since the run was confirmed once at its start. The file index and the consolidation queue are archived once per run and replaced after that; remote-log says when to append to the run log and readme written earlier in the run instead of writing new ones.
 
 Many files make many connector calls. Above about 30 files, say so in the preview and suggest splitting the material into two runs.
 

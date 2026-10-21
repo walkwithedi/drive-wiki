@@ -11,9 +11,9 @@
  *   3. 核对执行日志无误后运行 enableAutoRun()：允许正式执行并安装定时触发器
  * 以后更新代码：整份粘贴覆盖即可，MAIN_FOLDER_ID 留空也照常运行（已存在脚本属性里），无须再运行 setup()。
  *
- * 把 kb-incremental 产出的交付 zip 原样上传到「入库收件箱」，本脚本负责：
+ * 把 kb-ingest 产出的交付 zip 原样上传到「入库收件箱」，本脚本负责：
  *   1. 解压：根目录 .md → 主文件夹；实体/*.md → 主文件夹下实体子文件夹；README.txt 不入库，随 zip 一起归档
- *   2. 归档同名旧版：与 kb-incremental 归档模式一致，旧份移入「归档」并改名为「主名_旧YYYYMMDDHHMMSS.md」
+ *   2. 归档同名旧版：与 kb-ingest 归档模式一致，旧份移入「归档」并改名为「主名_旧YYYYMMDDHHMMSS.md」
  *   3. 收尾：处理完的 zip 改名后移入「归档」；异常 zip 移入「入库收件箱/异常」，不做任何改动
  *   分区：根目录只收 00_ 至「分区上限」_ 开头的 .md；「议题区起始」之前为汇总文件，之后为议题文件
  *
@@ -114,7 +114,7 @@ const CONFIG_KEYS = {
   snapshot_prefix:  { zh: '快照前缀',     required: false, ok: isName_ }
 };
 
-/** 可选字段不填时的取值（与 kb-incremental 中文预设一致） */
+/** 可选字段不填时的取值（与 kb-ingest 中文预设一致） */
 const DEFAULT_NAMES = {
   archive_dir: '归档',
   inbox_dir: '入库收件箱',

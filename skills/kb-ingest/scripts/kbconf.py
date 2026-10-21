@@ -66,7 +66,7 @@ SUMMARY_KEYS = ("spec", "status_card", "index", "open_items", "changelog", "glos
 DEFAULT_LIMITS = {"zh": (55, 80), "ja": (55, 80), "ko": (60, 90)}
 FALLBACK_LIMITS = (90, 120)
 
-# Converting uploads to Markdown before intake (kb-incremental scripts/convert.py).
+# Converting uploads to Markdown before intake (kb-ingest scripts/convert.py).
 # enabled: off unless the library turns it on (new libraries from a preset do).
 # image_limit: pictures in one batch that are read without asking.
 # min_pdf_chars_per_page, min_chars_per_image: below these a file is read as the original.
@@ -74,7 +74,7 @@ FALLBACK_LIMITS = (90, 120)
 CONVERT_DEFAULTS = {"enabled": False, "image_limit": 10, "min_pdf_chars_per_page": 200,
                     "min_chars_per_image": 100, "outline_chars": 6000}
 
-# Intake (kb-incremental). mode: fast files each item at once and leaves key conclusions and the
+# Intake (kb-ingest). mode: fast files each item at once and leaves key conclusions and the
 # trigger check to consolidation (scripts/prep.py, scripts/consolidate.py); full runs every step per
 # item. consolidate_files: files handled in one consolidation round. Many files at once
 # (scripts/batch_plan.py): a batch closes at batch_files files or batch_mb megabytes; more than one

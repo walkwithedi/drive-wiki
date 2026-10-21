@@ -1,6 +1,6 @@
 # Parameters: life library
 
-These are the process parameters kb-incremental reads for this library. Edit them to suit the library; the skill never overwrites this file.
+These are the process parameters kb-ingest reads for this library. Edit them to suit the library; the skill never overwrites this file.
 
 ## Reading conditions
 

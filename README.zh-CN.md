@@ -4,11 +4,20 @@
 
 | skill | 口令 | 作用 |
 | --- | --- | --- |
-| kb-note | 「记一下」 | 把对话中的零碎信息存为随手记，日后批量入库 |
-| kb-incremental | 「增量整理」「整合」「整理随手记」「归档旧版」「体检」「新建知识库」 | 分区、查重、版本判定，每份材料只保留一个现行版本，事实变化时更新状态卡，定期体检 |
+| kb-note | 「记一下」「把这个回答存下来」 | 把对话中的零碎信息或值得留存的回答存为随手记，日后批量入库 |
+| kb-ingest | 「增量整理」「整合」「整理随手记」「归档旧版」「体检」「新建知识库」 | 分区、查重、版本判定，每份材料只保留一个现行版本，事实变化时更新状态卡，定期体检（含核对状态卡里的数字和日期能否在出处原文中找到） |
 | kb-query | 直接提问 | 先在知识库检索再作答，注明依据文件，不凭记忆回答 |
 
 [English](README.md)
+
+## 适合谁
+
+一个人管理自己的知识，生活和工作都行，随时随地用 Claude 手机应用来问。
+
+- **日常不需要电脑**：记录、提问、入库都能在手机上的 Claude 应用里完成。一次入库很多文件时，先用任意工具把文件转成 Markdown，并启用[收件箱](docs/inbox.zh-CN.md)，手机上也跑得顺。每份文档转成一个 Markdown，各自的版本和查重互不影响；整批合成一个文件也可以，会作为一份材料入库。
+- **现行且有出处**：新版本替换旧版本，状态卡只保留现行结论。完整入库（`intake.mode: full`）时每个文件入库就当场更新状态卡，快速入库（预设）在整合后更新。每条事实注明出处文件，状态卡改动写入前先对照原文核对。
+- **普通的 Drive 文件夹**：不用装 git、终端或服务器；上传的 Word、PDF 和邮件会先转成文字。
+- **不适合**：多人同时往一个库里写入（没有防止同时写入的保护）；也不适合需要逐行改动历史、库完全离线的人，这种需求用本地 Markdown 文件夹加 git 更合适。
 
 ## 为什么
 
@@ -20,11 +29,11 @@
 - **库自己的规范**决定分区和议题。材料放不进现有议题时规范会扩充，每次都告诉你。
 - **先快速入库，再整合**：每个文件入库后立刻可查；与汇总文件的比对放到之后的整合环节，由你审阅。
 
-完整的道理见 [docs/methodology.zh-CN.md](docs/methodology.zh-CN.md)。drive-wiki 与 [evergreen-wiki](https://github.com/walkwithedi/evergreen-wiki) 采用同一套方法：evergreen-wiki 把库放在本地文件夹、服务离线工作站，drive-wiki 只服务 Google Drive 里的库。这里的 kb-incremental 对应那边的 kb-ingest。
+完整的道理见 [docs/methodology.zh-CN.md](docs/methodology.zh-CN.md)。
 
 ## 整体结构
 
-- **技能**（kb-note、kb-query、kb-incremental）：claude.ai 加载的说明和脚本，具体工作由它们完成。
+- **技能**（kb-note、kb-query、kb-ingest）：claude.ai 加载的说明和脚本，具体工作由它们完成。
 - **知识库**：一个 Drive 文件夹，里面是 Markdown 文件，加上配置（`_kb.json`）、流程参数（`_kb-params.md`）、规范、状态卡和文件索引。可以有多个，比如一个生活库、一个工作库。
 - **注册表**（`kb-libraries.json`，存在 Drive 里）：登记你有哪些库，以及每个库的 id、名称、范围和文件夹 ID。技能靠它决定每次请求用哪个库。
 - **项目指令里的一行**：告诉 Claude 你有知识库、注册表在哪里，让它先查库，再凭记忆回答。
@@ -33,7 +42,7 @@
 ```text
 你 --提问--> Claude（在项目里）--读取--> 指令里的一行（registry: Drive folder ...）
                  |
-                 +-- 技能（kb-query、kb-note、kb-incremental）
+                 +-- 技能（kb-query、kb-note、kb-ingest）
                        +-- 注册表 kb-libraries.json：用哪个库、哪个文件夹
                        +-- 知识库文件夹：Markdown 文件、状态卡、文件索引
                  |
@@ -42,11 +51,20 @@
 
 ## 快速上手
 
-1. 从 [Releases](../../releases) 下载 `kb-note`、`kb-query`、`kb-incremental`（带 `-zh` 的是中文口令版），在 claude.ai 的「设置 → Capabilities → Skills」逐个上传。
+1. 从 [Releases](../../releases) 下载 `kb-note`、`kb-query`、`kb-ingest`（带 `-zh` 的是中文口令版），在 claude.ai 的「设置 → Capabilities → Skills」逐个上传。
 2. 连接 Google Drive，为知识库新建一个空文件夹，再为知识库建一个项目（Project）。
 3. 在项目里说「开始使用知识库」。Claude 问三个问题（放在哪里、用哪个预设、收录什么），给出预览，把库写进文件夹，再给你一行话贴进项目指令。贴好、保存，在项目里新开对话即可。
 
 逐步说明和每一步写了什么，见 [docs/setup.zh-CN.md](docs/setup.zh-CN.md)。虚构的[示例库](examples/)展示了入库几次之后库的样子。
+
+## 从 1.x 升级
+
+2.0 起入库技能改名为 kb-ingest（原名 kb-incremental）。claude.ai 按名字区分技能，上传 kb-ingest 会新增一个技能而不是替换旧的，两个会抢同样的口令。
+
+1. 在 claude.ai 的「设置 → Capabilities → Skills」删除 kb-incremental。
+2. 上传三个 2.0 的 zip：kb-note、kb-query、kb-ingest。
+
+知识库、注册表、收件箱和项目指令里的那一行都不用改。
 
 ## 库的样子
 
@@ -75,7 +93,7 @@ life-kb/
 
 | 文件 | 用途 |
 | --- | --- |
-| `kb-note-<版本>.zip`、`kb-query-<版本>.zip`、`kb-incremental-<版本>.zip` | 上传到 claude.ai 或 Claude 应用 |
+| `kb-note-<版本>.zip`、`kb-query-<版本>.zip`、`kb-ingest-<版本>.zip` | 上传到 claude.ai 或 Claude 应用 |
 | 同名、以 `-zh.zip` 结尾的文件 | 同样的技能，中文口令 |
 | `drive-wiki-v<版本>.zip` | 整个仓库：技能、收件箱脚本、文档和示例库 |
 

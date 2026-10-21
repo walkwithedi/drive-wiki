@@ -1,6 +1,6 @@
 # Parameters: work library
 
-These are the process parameters kb-incremental reads for this library. Edit them to suit the library; the skill never overwrites this file. Add your own organisation's rules under "Extra hard rules".
+These are the process parameters kb-ingest reads for this library. Edit them to suit the library; the skill never overwrites this file. Add your own organisation's rules under "Extra hard rules".
 
 ## Reading conditions
 

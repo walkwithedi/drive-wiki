@@ -1,11 +1,11 @@
 ---
 name: kb-note
-description: Saves a small piece of information from the conversation into the user's knowledge base as a quick note, to be filed properly later by kb-incremental. Use when the user says "note this", "save this", "add this to my knowledge base", "jot this down" or similar, for example "note this: send the draft plan to Alex by Friday". Writes the user's words, key points and context to one new file in the library's quick-notes folder, replies with the file name and the key point, and when notes pile up suggests saying "file my quick notes". Only creates files, never changes existing ones. Use only when the user asks; never save on your own or ask whether to save. Requests aimed at the assistant's own memory ("remember that", "from now on") are not for this skill. Filing, archiving and health checks belong to kb-incremental; questions belong to kb-query.
+description: Saves a small piece of information from the conversation into the user's knowledge base as a quick note, to be filed properly later by kb-ingest. Use when the user says "note this", "save this", "add this to my knowledge base", "jot this down" or similar, for example "note this: send the draft plan to Alex by Friday". Also saves a knowledge-base answer the user wants kept ("save this answer", "archive this answer") as an answer snapshot. Writes the user's words, key points and context to one new file in the library's quick-notes folder, replies with the file name and the key point, and when notes pile up suggests saying "file my quick notes". Only creates files, never changes existing ones. Use only when the user asks; never save on your own or ask whether to save. Requests aimed at the assistant's own memory ("remember that", "from now on") are not for this skill. Filing, archiving and health checks belong to kb-ingest; questions belong to kb-query.
 ---
 
 # Quick notes: save a piece of the conversation
 
-Version: 1.23.0
+Version: 2.0.0
 
 This skill does one thing: create one new file in a library's quick-notes folder. It never edits, moves or deletes any file, and never touches the library root, archive, entities or inbox.
 
@@ -18,6 +18,7 @@ Read references/config.md and references/environment.md once before starting.
 3. If it could refer to several places, ask in one sentence which one. Do not guess.
 4. Unrelated things in one request: one file each.
 5. Tentative or unconfirmed statements are saved as they are, marked "unconfirmed" in the key points.
+6. Answer snapshot: when the user asks to keep a knowledge-base answer ("save this answer", "archive this answer", 「把这个回答存下来」「存档这个回答」), save the question and that answer exactly as given, with its basis lines. It is saved as a quick note like any other (step 3, with the changes listed there); it goes into the library only when the quick notes are filed.
 
 ## Step 2: which library
 
@@ -26,7 +27,7 @@ Load the registry. Match the content against each library's scope.
 2. Exactly one scope fits: use it.
 3. None or several fit: ask "Which library: <labels>?" in one sentence. Never default.
 Then read that library's backend file (references/backend-gdrive.md) and its _kb.json (for language, timezone, sensitivity and names).
-After the note is saved, check that library for files waiting for consolidation (references/config.md, section 5), and remind once per conversation; this skill only reminds and hands "consolidate" to kb-incremental.
+After the note is saved, check that library for files waiting for consolidation (references/config.md, section 5), and remind once per conversation; this skill only reminds and hands "consolidate" to kb-ingest.
 
 ## Step 3: write the note
 
@@ -52,6 +53,7 @@ Rules:
 2. With sensitivity enabled: mask ID numbers, card and account numbers, passwords and one-time codes with asterisks, keeping at most the last keep_last characters, in words and key points alike. Never add health, money or investment advice or interpretation.
 3. Extra hard rules in the library's _kb-params.md also apply here.
 4. Dates, numbers, names and organisations exactly as the user wrote them. A relative date ("next Wednesday") gets the computed date in brackets in the key points, marked "computed".
+5. Answer snapshot (step 1, rule 6): Source is "knowledge base answer" (「知识库问答」). Words hold the user's question and the answer exactly as given, basis lines included. The first key point is "answer snapshot of YYYY-MM-DD, not updated when its sources change" (「YYYY-MM-DD 的问答快照，不随来源更新」); the others list the basis files the answer names. The short topic in the file name starts with "answer" (「问答」).
 
 ## Step 4: save it
 
@@ -65,7 +67,7 @@ Rules:
 
 ## Step 5: confirm
 
-Reply in one or two lines:
+Only when write_new in step 4 succeeded and a find_exact of the file name in the notes folder finds it; until then never say the note was saved. Reply in one or two lines:
   Saved to <label> quick notes: <file name>
   Key point: <one sentence>
 

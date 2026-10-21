@@ -1,4 +1,4 @@
-"""Unit tests for the kb-incremental scripts. Standard library only: python3 -m unittest discover tests"""
+"""Unit tests for the kb-ingest scripts. Standard library only: python3 -m unittest discover tests"""
 import json
 import os
 import shutil
@@ -10,7 +10,7 @@ import unittest
 import zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS = os.path.join(ROOT, "skills", "kb-incremental", "scripts")
+SCRIPTS = os.path.join(ROOT, "skills", "kb-ingest", "scripts")
 sys.path.insert(0, SCRIPTS)
 import kbconf  # noqa: E402
 
@@ -300,6 +300,45 @@ class CardCheckTest(Tmp):
         self.assertIn("locked field changed: type", out)
         self.assertIn("aliases lost entries", out)
         self.assertIn("level-1 heading changed", out)
+
+
+class EvidenceCheckTest(Tmp):
+    def setUp(self):
+        super().setUp()
+        write(self.p("src", "02_Checkups_report_2025-annual.md"),
+              "# Report\nTotal cholesterol 5.6 mmol/L (reference below 5.2). Next visit: 2026年11月1日.\n"
+              "The doctor wrote “复查前空腹十二小时”. Fee 1,200.\n")
+        write(self.p("src", "Entities", "Atlas.md"), "# Atlas\nBudget 15.6 per year, started 2026-03.\n")
+
+    def check(self, card, *args):
+        write(self.p("card.md"), card)
+        return run("evidence_check.py", self.p("card.md"), "--sources", self.p("src"), *args).stdout
+
+    def test_found_values(self):
+        out = self.check(
+            "# Status card\nLast updated: 2026-10-10\n\n## Items\n\n"
+            "1. Cholesterol 5.6 mmol/L, above 5.2; follow-up on 2026-11-01 (basis: [[02_Checkups_report_2025-annual]])\n"
+            "2. Fasting rule: 「复查前空腹十二小时」; fee 1200 (basis: [[02_Checkups_report_2025-annual|report]])\n"
+            "3. Atlas started 2026年3月 (basis: [Atlas](Entities/Atlas.md))\n")
+        self.assertIn("3 items, 6 values checked, 0 not found, 0 without basis link, 0 with basis file missing", out)
+
+    def test_suspects(self):
+        out = self.check(
+            "1. Cholesterol 5.8 mmol/L; follow-up on 2026-12-01 (basis: [[02_Checkups_report_2025-annual]])\n"
+            "2. Atlas budget 5.6 per year (basis: [[Atlas]])\n"
+            "3. Owner changed in 12 months\n"
+            "4. Limit 10% (basis: [[Missing-file]])\n")
+        self.assertIn("Item 1 (line 1): number not found in 02_Checkups_report_2025-annual: 5.8", out)
+        self.assertIn("Item 1 (line 1): date not found in 02_Checkups_report_2025-annual: 2026-12-01", out)
+        self.assertIn("Item 2 (line 2): number not found in Atlas: 5.6", out)
+        self.assertIn("Item 3 (line 3): no basis link", out)
+        self.assertIn("Item 4 (line 4): basis file not in sources folder: Missing-file", out)
+
+    def test_item_filter_and_bad_folder(self):
+        out = self.check("1. Value 5.8 (basis: [[Atlas]])\n2. Value 15.6 (basis: [[Atlas]])\n", "--item", "2")
+        self.assertIn("1 items, 1 values checked, 0 not found", out)
+        p = run("evidence_check.py", self.p("card.md"), "--sources", self.p("nope"), check=False)
+        self.assertEqual(p.returncode, 2)
 
 
 class ArchivePlanTest(Tmp):
