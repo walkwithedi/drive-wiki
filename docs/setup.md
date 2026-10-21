@@ -4,13 +4,22 @@ How to start a library in claude.ai or the Claude apps, what each step writes, a
 
 ## What you need
 
-- A claude.ai account with Skills (Settings > Capabilities) and the Google Drive connector.
-- A Google Drive folder for each library, empty when the library is new.
-- A Project for your knowledge base. Only Project instructions persist across conversations, and the one line that tells Claude about your libraries goes there.
+Check each item before you start; a missing one usually shows up later as a skill that does nothing or answers from memory.
+
+- [ ] A claude.ai plan with Skills ([which plans](https://support.claude.com/en/articles/12512180-use-skills-in-claude)).
+- [ ] **Code execution and file creation** switched on in Settings > Capabilities. Skills run in Claude's code sandbox and do not work without it. On Team and Enterprise plans an owner also has to allow code execution and skills in the organisation settings.
+- [ ] The Google Drive connector, connected to the Google account that will own the libraries.
+- [ ] The claude.ai web or desktop app for uploading the skills. After that, everything works in the phone apps too.
+- [ ] A Google Drive folder for each library, empty when the library is new.
+- [ ] A Project for your knowledge base. Only Project instructions persist across conversations, and the one line that tells Claude about your libraries goes there.
 
 ## 1. Upload the skills
 
-Download `kb-note-<version>.zip`, `kb-query-<version>.zip` and `kb-ingest-<version>.zip` from the [Releases](../../../releases) page; the `-zh` zips are the same skills with Chinese trigger phrases. Upload each in Settings > Capabilities > Skills and make sure all three are switched on. To update later, upload the new zips in the same place, replacing the old ones; libraries need no change.
+From the [Releases](../../../releases) page download three zips: `kb-note-<version>.zip`, `kb-query-<version>.zip` and `kb-ingest-<version>.zip`. Take the `-zh` zips instead if you want Chinese trigger phrases; never install both versions of one skill, since they would answer the same requests. The repository zip is not needed for this.
+
+Open Customize > Skills, choose "+", Create skill, Upload a skill, and upload the first zip as it is (do not unpack it). Repeat for the other two, then make sure all three are switched on.
+
+To update later, upload the new zips in the same place, replacing the old ones; libraries need no change.
 
 ## 2. Set up the first library
 
@@ -31,13 +40,15 @@ In the Project, with Google Drive connected, say "get started with the knowledge
 
 Paste the line into the Project instructions, save, and start a new conversation in the Project.
 
+Check the setup: in that new conversation ask "which knowledge bases do I have?". Claude should name the library and its scope. If it does not, or says no knowledge base is set up, the line is missing or not saved, or the conversation is outside the Project; see [troubleshooting](troubleshooting.md).
+
 ## 3. Try it
 
 1. Upload a document and say "file this". Intake places it in a partition, names it, checks for duplicates and versions, writes it after a preview and reports one line. It is searchable at once.
 2. Ask a question the document answers. kb-query reads the status card, then the file, and names the file in its answer.
 3. Say "consolidate". kb-ingest adds the file's key conclusions and proposes changes to the status card as a numbered list for you to accept.
 
-Other requests: "note this: ..." (kb-note), "file my quick notes", "archive old versions", "health check".
+Other requests: "note this: ..." (kb-note), "file my quick notes", "archive old versions", "health check". All of them, with what happens after each: [daily-use.md](daily-use.md). When something does not work: [troubleshooting.md](troubleshooting.md).
 
 ## Adding a library
 

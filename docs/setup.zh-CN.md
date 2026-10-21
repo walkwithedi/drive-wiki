@@ -4,13 +4,22 @@
 
 ## 需要准备
 
-- 一个能用 Skills（设置 → Capabilities）和 Google Drive 连接器的 claude.ai 账号。
-- 每个知识库一个 Google Drive 文件夹，新建库时须为空文件夹。
-- 一个用于知识库的项目（Project）。只有项目指令能在各次对话之间保留，告诉 Claude 你有知识库的那一行就写在这里。
+开始前逐项核对；缺了哪一项，往往到后面才表现为 skill 不起作用或凭记忆回答。
+
+- [ ] 一个能用 Skills 的 claude.ai 套餐（[哪些套餐](https://support.claude.com/en/articles/12512180-use-skills-in-claude)）。
+- [ ] 在「设置 → Capabilities」打开 **Code execution and file creation**（代码执行与文件创建）。skill 在 Claude 的代码沙箱里运行，不打开就无法工作。Team 和 Enterprise 套餐还需要管理员在组织设置里允许代码执行和 Skills。
+- [ ] 连接 Google Drive，用的是将来存放知识库的那个 Google 账号。
+- [ ] 上传 skill 用 claude.ai 网页版或桌面版；装好以后，手机应用里也能用全部功能。
+- [ ] 每个知识库一个 Google Drive 文件夹，新建库时须为空文件夹。
+- [ ] 一个用于知识库的项目（Project）。只有项目指令能在各次对话之间保留，告诉 Claude 你有知识库的那一行就写在这里。
 
 ## 1. 上传技能
 
-从 [Releases](../../../releases) 页面下载 `kb-note-<版本>.zip`、`kb-query-<版本>.zip`、`kb-ingest-<版本>.zip`；带 `-zh` 的是同样的技能、中文口令。在「设置 → Capabilities → Skills」逐个上传，并确认三个都已打开。以后更新时，在同一处上传新的 zip 替换旧版即可，知识库不用改。
+从 [Releases](../../../releases) 页面下载三个 zip：`kb-note-<版本>.zip`、`kb-query-<版本>.zip`、`kb-ingest-<版本>.zip`。想用中文口令就改下带 `-zh` 的三个；同一个技能不要两种版本都装，否则会抢同样的口令。整个仓库的 zip 这里用不到。
+
+打开「Customize → Skills」，点「+」→「Create skill」→「Upload a skill」，把第一个 zip 原样上传（不要解压）。另外两个照做，然后确认三个都已打开。
+
+以后更新时，在同一处上传新的 zip 替换旧版即可，知识库不用改。
 
 ## 2. 建第一个库
 
@@ -31,6 +40,8 @@
 
 把这一行贴进项目指令、保存，然后在项目里新开对话。
 
+自检：在这个新对话里问「我有哪些知识库？」。Claude 应能说出库名和范围。说不出，或说还没有设置知识库，就是那一行没贴、没保存，或者对话不在这个项目里；见[问题排查](troubleshooting.zh-CN.md)。
+
 ## 3. 试一试
 
 1. 上传一份文档，说「入库」。入库会给它分区、命名、查重和判定版本，预览后写入，报一行进度。写入后立刻可查。
@@ -38,6 +49,7 @@
 3. 说「整合」。kb-ingest 给文件补关键结论，把对状态卡的改动编号列出，由你决定采用哪些。
 
 其他口令：「记一下：……」（kb-note）、「整理随手记」「归档旧版」「体检」。 <!-- sensitive-scan: ignore -->
+全部口令及之后会发生什么，见[日常使用](daily-use.zh-CN.md)；遇到问题见[问题排查](troubleshooting.zh-CN.md)。
 
 ## 新增一个库
 
