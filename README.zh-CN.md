@@ -2,6 +2,8 @@
 
 由 Claude 维护、放在你 Google Drive 里的个人知识库，内容始终是现行的。在手机上的 Claude 应用里提问，得到的是一个现行答案，并注明出自哪个文件。三个 skill 在 claude.ai 和 Claude 应用里完成工作；知识库就是你自己的一个普通 Markdown 文件夹。
 
+**状态：本仓库不再更新。** 2.1.0 是最后一个版本，照现状可用；不再发版、修复或同步，Issue 和 PR 不再处理。
+
 [English](README.md) · 想在自己电脑上离线使用、由本地模型维护的知识库，见 [evergreen-wiki](https://github.com/walkwithedi/evergreen-wiki)。
 
 ## 用起来是什么样
