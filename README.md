@@ -32,6 +32,7 @@ File the 2026 checkup and say "consolidate": item 1 is proposed for an update, y
 - **The current answer, not the best match.** New versions replace old ones when material arrives, so an outdated plan or an old statement does not come back as the answer.
 - **A source for every fact.** Each answer names its file; what the library does not hold is said to be not recorded, never filled in from memory.
 - **Nothing lost.** Older versions move to an archive folder; nothing is deleted, and every write is shown to you first.
+- **Your Drive, your phone.** The library stays in your own Drive, searched by its full text, and noting, filing and asking all work from the Claude app, with no git or commits. Why: [docs/methodology.md](docs/methodology.md#why-google-drive-and-claudeai).
 
 | Skill | You say | It does |
 | --- | --- | --- |
