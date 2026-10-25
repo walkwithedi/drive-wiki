@@ -43,6 +43,10 @@ A library can turn on sensitivity classes (`_kb.json` `sensitivity`; on in the l
 - **Nothing to install.** The skills run in claude.ai and the Claude apps, on the web and on the phone. Scripts run in Claude's own sandbox and use only the Python standard library; without it, the skills do the same work by hand and say so.
 - **The registry lives with the libraries.** The list of libraries is a file in Drive, named once in the Project instructions; adding a library later changes only that file.
 - **Search stays inside the library.** Every Drive search is limited to the library folder by its ID, one level deep, so the archive and unrelated files never enter an answer.
+- **Search reads the text.** Drive searches inside files as well as their names, so a fact is found by the words it was written in, in any language.
+- **Filing works from a phone.** Notes, intake and questions are all conversations in the Claude app; there are no commits, branches or terminal.
+- **History without git.** A new version takes the old one's name and the old one moves to the archive folder; changes of fact go into the change log. Nothing is deleted.
+- **Your data stays in your Drive.** A library lives only in your Google account, and Drive's sharing settings decide who can see it; it never goes into a code repository.
 
 ## Delivery: direct or through the inbox
 
