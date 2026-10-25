@@ -2,6 +2,8 @@
 
 Releases follow the "Version:" line of the three SKILL.md files; merging a version change to main publishes v<version> (.github/workflows/release.yml).
 
+No further releases: 2.1.0 is the last version.
+
 ## 2.1.0
 
 Upload the three 2.1.0 zips over the 2.0 ones. Libraries, the registry, the inbox and the line in the Project instructions stay as they are.

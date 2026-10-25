@@ -2,6 +2,8 @@
 
 A personal knowledge base that Claude keeps current in your Google Drive. Ask it from the Claude app on your phone and get one current answer with the file it came from. Three skills for claude.ai and the Claude apps do the work; the library is a plain folder of Markdown files you own.
 
+**Status: no longer updated.** 2.1.0 is the last version and stays usable as it is. There will be no further releases, fixes or syncs, and issues and pull requests are not acted on.
+
 [中文说明](README.zh-CN.md) · For an offline library on your own computer, kept by a local model, see [evergreen-wiki](https://github.com/walkwithedi/evergreen-wiki).
 
 ## What it looks like
